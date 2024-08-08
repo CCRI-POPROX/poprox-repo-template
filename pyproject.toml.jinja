@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{project_name}}"
+description = "{{project_descr}}"
+authors = [{ name = "Karl Higley", email = "khigley@umn.edu" }]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+requires-python = ">= 3.11"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+dynamic = ["version"]
+dependencies = [
+]
+
+[project.urls]
+Homepage = "https://docs.poprox.ai"
+GitHub = "https://github.com/CCRI-POPROX/{{project_name}}"
+
+###### build and environment configurations ######
+# basic hatch config
+[tool.hatch.envs.default]
+python = "3.11"
+# keep these dependencies in sync with dev/environment.yml if it exists
+dependencies = [
+  # testing and coverage
+  "coverage[toml]>=6.5",
+  "pytest>=8",
+  # development tooling
+  "pre-commit >=3.7,<4",
+  "ruff >=0.4",
+  "pyright >=1.1,<2",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+
+# tooling just for code validation
+[tool.hatch.envs.lint]
+detached = true
+dependencies = ["ruff>=0.4", "pyright>=1.1,<2"]
+
+[tool.hatch.envs.lint.scripts]
+typing = "pyright {args:src/poprox_recommender tests}"
+style = ["ruff check {args:.}", "ruff format --check --diff {args:.}"]
+fmt = ["ruff format {args:.}", "ruff check --fix {args:.}", "style"]
+all = ["style", "typing"]
+
+###### tooling configurations ######
+# ruff — formatting and lints
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["F", "I", "E"]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# tests can have unused imports (for pytest fixtures)
+"tests/**/*" = ["F401"]
+
+[tool.ruff.isort]
+known-first-party = ["poprox_*"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.coverage.run]
+source_pkgs = ["{{package_name}}", "tests"]
+branch = true
+parallel = true
+omit = ["src/{{package_name}}/__about__.py"]
+
+[tool.coverage.paths]
+{{package_name}} = [
+  "src/{{package_name}}",
+]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+
+[tool.conda-lock]
+channels = ["pytorch", "conda-forge", "nodefaults"]
+# extra deps in the conda environment
+[tool.conda-lock.dependencies]
+# specify our Python version & make sure we have pip
+python = "=3.11"
+pip = ">=24"
+# poprox concepts comes from PyPI
+poprox-concepts = { source = "pypi" }

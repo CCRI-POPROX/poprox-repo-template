@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# override default shell for mamba activation
+defaults:
+  run:
+    shell: bash -el {0}
+
+jobs:
+  run-tests:
+    name: Run the PyTest tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Hatch
+        uses: pypa/hatch@install
+
+      - name: Run tests
+        run: |
+          hatch run test
