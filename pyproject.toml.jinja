@@ -23,6 +23,9 @@ GitHub = "https://github.com/CCRI-POPROX/{{project_name}}"
 
 ###### build and environment configurations ######
 # basic hatch config
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.envs.default]
 python = "3.11"
 # keep these dependencies in sync with dev/environment.yml if it exists
