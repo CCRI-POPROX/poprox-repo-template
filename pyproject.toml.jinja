@@ -51,6 +51,14 @@ style = ["ruff check {args:.}", "ruff format --check --diff {args:.}"]
 fmt = ["ruff format {args:.}", "ruff check --fix {args:.}", "style"]
 all = ["style", "typing"]
 
+# environment for project meta-tasks
+[tool.hatch.envs.meta]
+detached = true
+dependencies = ["copier==9.*"]
+
+[tool.hatch.envs.meta.scripts]
+update-template = "copier update"
+
 ###### tooling configurations ######
 # ruff — formatting and lints
 [tool.ruff]
