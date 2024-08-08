@@ -2,7 +2,6 @@
 project_name:
   type: str
   help: What is your project name (for the repo & Python distribution)?
-  default:
 
 project_descr:
   type: str
