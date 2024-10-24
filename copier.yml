@@ -10,6 +10,7 @@ _exclude:
 - .svn
 - .pixi
 - node_modules
+- .dvc/cache
 
 # questions
 project_name:
